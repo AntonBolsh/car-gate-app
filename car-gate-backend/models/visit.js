@@ -1,0 +1,30 @@
+const mongoose = require('mongoose');
+
+const VisitSchema = mongoose.Schema({
+        id: String,
+        licensePlate: {
+            type: String,
+            required: [true, "licensePlate is required"]
+        },
+        property_id: {
+            type: String, 
+            required: [true, "missing property_id"]
+        },
+        date: {
+            type: Date,
+            required: [true, "date is missing"],
+            validate: function(input) {
+                return new Date(input) >= new Date();
+            },
+        },
+        visitType: {
+            type: String,
+            enum: ['GUEST', 'WORKER', 'OTHER'],
+            required: [true, "visitType is missing"],
+        }
+    }, 
+    {
+        timestamps: true
+});
+
+module.exports = mongoose.model('Visit', VisitSchema);
