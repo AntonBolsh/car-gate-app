@@ -1,0 +1,67 @@
+
+.Search {
+  background-color: #061b47;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.Success {
+  background-color: #02830f;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.NotFound {
+  background-color: #830202;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+input {
+    width: 550px;
+    height: fit-content;
+    background-color: #b8b8b8;
+    text-align: center;
+    font-size: 32pt;
+    border-color: #030d22;
+    border-width: 3px;
+    padding: auto;
+  }
+
+button {
+    background-color: aqua;
+    font-size: 24pt;
+    width: 550px;
+    height: fit-content;
+    border-width: 3px;
+    margin-top: 10px;
+  }
+  
+  button:hover {
+    background-color: aliceblue;
+  }
+
+.Announce {
+    background-color: rgb(10, 8, 20);
+    font-size: 24pt;
+    width: 550px;
+    height: fit-content;
+    border-width: 3px;
+    margin-top: 10px;
+}
+  
