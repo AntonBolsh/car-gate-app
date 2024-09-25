@@ -3,7 +3,6 @@ const User = require('../models/user.js');
 const Car = require('../models/car.js');
 const Property = require('../models/property.js');
 const Visit = require('../models/visit.js');
-const property = require('../models/property.js');
  
 var router = express.Router();
 
