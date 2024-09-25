@@ -9,15 +9,28 @@ const SearchForm = () => {
     const checkPlate = (e) => {
         e.preventDefault();
         
-        fetch(`http://localhost:7100/car/${input}`).then((res) => {
-            if (res.status === 200) {
+        fetch(`http://localhost:7100/car/${input}`).then((carRes) => {
+            if (carRes.status === 200) {
                 setPage("success")
-                res.json().then(resp => {
-                    setProperty(resp[0].property_id)
+                carRes.json().then(carResp => {
+                    setProperty(carResp[0].property_id)
                 })
-            } else if (res.status === 404) {
-                setPage("NotFound")
+                return;
+            } else if (carRes.status === 404) {
+                fetch(`http://localhost:7100/visit/${input}`).then((visitRes) => {
+                    if (visitRes.status === 200) { //here need to check also if there are visits for today
+                        setPage("success")
+                        visitRes.json().then(visitResp => {
+                            setProperty(visitResp[0].property_id)
+                        })
+                        return;
+                    } else if (visitRes.status === 404) {
+                        setPage("NotFound")
+                        return;
+                    }
+                })
             }
+            // Here need to process errors of API other than 404
         })
         
     }
