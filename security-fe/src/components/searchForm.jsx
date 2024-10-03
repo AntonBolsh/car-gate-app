@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import './searchForm.css'
 
-const SearchForm = () => {
+const SearchForm = ({ token }) => {
     const [page, setPage] = useState("search")
     const [input, setInput] = useState("")
     const [property, setProperty] = useState("")
@@ -9,8 +9,17 @@ const SearchForm = () => {
     const checkPlate = (e) => {
         e.preventDefault();
         const beLink = import.meta.env.VITE_BACKEND_LINK
+
+        const headers = {
+                accept: 'application/json',
+                authorization: `Bearer ${token}`,
+            };
         
-        fetch(`${beLink}/car/${input}`).then((carRes) => {
+        fetch(`${beLink}/car/${input}`, {
+            method: 'GET',
+            headers: headers
+            })
+            .then((carRes) => {
             if (carRes.status === 200) {
                 setPage("success")
                 carRes.json().then(carResp => {
@@ -18,7 +27,10 @@ const SearchForm = () => {
                 })
                 return;
             } else if (carRes.status === 404) {
-                fetch(`${beLink}/visit/${input}`).then((visitRes) => {
+                fetch(`${beLink}/visit/${input}`, {
+                method: 'GET',
+                headers: headers
+                }).then((visitRes) => {
                     if (visitRes.status === 200) { //here need to check also if there are visits for today
                         setPage("success")
                         visitRes.json().then(visitResp => {

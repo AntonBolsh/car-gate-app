@@ -5,10 +5,10 @@ import Public from './components/public'
 
 
 function App() {
-  const isLogin = useAuth();
+  const [isLogin, token] = useAuth();
 
 
-  return isLogin ? <SearchForm /> : <Public/>
+  return isLogin ? <SearchForm token={token} /> : <Public/>
 }
 
 export default App;

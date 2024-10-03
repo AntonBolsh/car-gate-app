@@ -3,6 +3,8 @@ const User = require('../models/user.js');
 const Car = require('../models/car.js');
 const Property = require('../models/property.js');
 const Visit = require('../models/visit.js');
+const keycloak = require("../middlewares/keycloak");
+require('dotenv').config();
  
 var router = express.Router();
 
@@ -92,7 +94,7 @@ router.delete('/car/:id', (req,res) => {
 });
 
 //Find a car by plate number
-router.get('/car/:licensePlate', (req,res) => {
+router.get('/car/:licensePlate', keycloak.protect('realm:security-gate-keeper'), (req,res) => {
     Car.find({licensePlate : req.params.licensePlate})
     .then(car => {
         if(!car || car.length == 0) {
