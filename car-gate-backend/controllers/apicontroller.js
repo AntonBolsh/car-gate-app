@@ -95,14 +95,32 @@ router.delete('/car/:id', (req,res) => {
 
 //Find a car by plate number
 router.get('/car/:licensePlate', keycloak.protect('realm:security-gate-keeper'), (req,res) => {
+    //req.kauth.grant contains user information
+    //console.log(req.kauth.grant)
+
     Car.find({licensePlate : req.params.licensePlate})
-    .then(car => {
-        if(!car || car.length == 0) {
+    .then(cars => {
+        if(!cars || cars.length == 0) {
             return res.status(404).send({
                 message: `Car not found with id ${req.params.licensePlate}`
             });            
         }
-        res.status(200).send(car);
+        const car = cars[0];
+        return Property.find({_id : car.property_id})
+            .then(property => {
+                if(!property || property.length !== 1) {
+                    return res.status(400).send({
+                        message: `Car doesn't have property or have to many properties`
+                    });            
+                }
+                const carWithAddress = { ...car, property_address: property[0].address };
+                res.status(200).send(carWithAddress);
+            }).catch(err => {    
+                console.log(err)     
+                return res.status(500).send({
+                    message: `Error retrieving user : ${err.message}`
+                });
+            });
     }).catch(err => {         
         return res.status(500).send({
             message: `Error retrieving car : ${err.message}`

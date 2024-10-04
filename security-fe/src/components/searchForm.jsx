@@ -23,7 +23,8 @@ const SearchForm = ({ token }) => {
             if (carRes.status === 200) {
                 setPage("success")
                 carRes.json().then(carResp => {
-                    setProperty(carResp[0].property_id)
+                    console.log(carResp)
+                    setProperty(carResp.property_address)
                 })
                 return;
             } else if (carRes.status === 404) {
