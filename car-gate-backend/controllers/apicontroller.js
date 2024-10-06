@@ -60,14 +60,14 @@ router.get('/property/:id', (req,res) => {
 });
 
 //Create a car
-router.post('/car', (req,res) => {
+router.post('/cars', (req,res) => {
   
-    const property = new Car({
+    const car = new Car({
         licensePlate: req.body.licensePlate,
         property_id: req.body.property_id
     });
     
-    property.save()
+    car.save()
     .then(data => {
         res.status(201).send(data);
         console.log(`new Car was created ${data.licensePlate}`)
@@ -77,7 +77,7 @@ router.post('/car', (req,res) => {
 });
 
 //Delete a car
-router.delete('/car/:id', (req,res) => {
+router.delete('/cars/:id', (req,res) => {
     Car.findOneAndDelete({_id : req.params.id})
     .then(property => {
         if(!property) {
@@ -94,7 +94,27 @@ router.delete('/car/:id', (req,res) => {
 });
 
 //Find a car by plate number
-router.get('/car/:licensePlate', keycloak.protect('realm:security-gate-keeper'), (req,res) => {
+router.get('/cars', (req,res) => {
+
+    Car.find({isActive: true})
+    .then(cars => {
+        if(!cars || cars.length == 0) {
+            return res.status(404).send({
+                message: `Cars not found`
+            });            
+        }
+        res.status(200).send(cars);
+        })
+        .catch(err => {         
+        return res.status(500).send({
+            message: `Error retrieving car : ${err.message}`
+        });
+    });
+    
+});
+
+//Find a car by plate number
+router.get('/cars/:licensePlate', keycloak.protect('realm:security-gate-keeper'), (req,res) => {
     //req.kauth.grant contains user information
     //console.log(req.kauth.grant)
 
@@ -130,7 +150,7 @@ router.get('/car/:licensePlate', keycloak.protect('realm:security-gate-keeper'),
 });
 
 //Create a Visit
-router.post('/visit', (req,res) => {
+router.post('/visits', (req,res) => {
   
     const property = new Visit({
         licensePlate: req.body.licensePlate,
@@ -149,7 +169,7 @@ router.post('/visit', (req,res) => {
 });
 
 //Delete a Visit
-router.delete('/visit/:id', (req,res) => {
+router.delete('/visits/:id', (req,res) => {
     Visit.findOneAndDelete({_id : req.params.id})
     .then(property => {
         if(!property) {
@@ -166,7 +186,7 @@ router.delete('/visit/:id', (req,res) => {
 });
 
 //Find a Visit by plate number
-router.get('/visit/:licensePlate', (req,res) => {
+router.get('/visits/:licensePlate', (req,res) => {
     Visit.find({licensePlate : req.params.licensePlate})
     .then(visit => {
         if(!visit || visit.length == 0) {

@@ -1,0 +1,19 @@
+.custom-stack { 
+    justify-content: center;
+    padding: 1rem;
+    margin: 1rem;
+    background-color: rgb(239, 239, 239); 
+    transition: background-color 0.3s ease; 
+  }
+  
+  .custom-stack:hover {
+    background-color: rgb(220, 220, 220); 
+  }
+
+  .first-stack { 
+    justify-content: center;
+    padding: 1rem;
+    margin: 1rem;
+    font-size: x-large;
+    transition: background-color 0.3s ease; 
+  }

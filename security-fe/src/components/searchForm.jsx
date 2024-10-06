@@ -15,7 +15,7 @@ const SearchForm = ({ token }) => {
                 authorization: `Bearer ${token}`,
             };
         
-        fetch(`${beLink}/car/${input}`, {
+        fetch(`${beLink}/cars/${input}`, {
             method: 'GET',
             headers: headers
             })
@@ -28,7 +28,7 @@ const SearchForm = ({ token }) => {
                 })
                 return;
             } else if (carRes.status === 404) {
-                fetch(`${beLink}/visit/${input}`, {
+                fetch(`${beLink}/visits/${input}`, {
                 method: 'GET',
                 headers: headers
                 }).then((visitRes) => {
