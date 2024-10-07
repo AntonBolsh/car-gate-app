@@ -3,16 +3,20 @@ import Stack from 'react-bootstrap/Stack';
 import Container from 'react-bootstrap/Container';
 import  "./main.css"
 import { useState, useEffect } from 'react'; 
+import CarsModal from './carsModal'
+import NewCarModal from './newCarModal'
+import DeleteCarModal from './deleteCarModal'
 
 function carsMain() {
     const [cars, setCars] = useState([]); 
+    const [newCarModelShow, newCarModelsetShow] = useState(false);
 
     useEffect(() => { 
         const getCars = async () => {
             const beLink = import.meta.env.VITE_BACKEND_LINK;
             const headers = {
                 accept: 'application/json',
-                authorization: `Bearer xxx99392994k`,
+                authorization: `Bearer xxx99392994k`, // need to change hear when finish
             };
             
             try { 
@@ -35,26 +39,66 @@ function carsMain() {
         getCars(); 
     }, []); 
 
-  return (
-    <Container fluid="sm" className="justify-content-center">
-            <Stack className = "first-stack" direction="horizontal" gap={3}>
+    const toggleModal = (index) => {
+        setCars((prevCars) =>
+          prevCars.map((car, i) =>
+            i === index ? { ...car, showModal: !car.showModal } : car,
+          ),
+        );
+      };
+    
+    const toggleDeleteModal = (index) => {
+        setCars((prevCars) =>
+            prevCars.map((car, i) =>
+            i === index ? { ...car, showDeleteModal: !car.showDeleteModal } : car,
+            ),
+        );
+    };
+    
+      return (
+        <Container fluid="sm" className="justify-content-center">
+          <Stack className="first-stack" direction="horizontal" gap={3}>
             <div className="p-2">Cars</div>
-            <Button className="ms-auto" variant="primary">Add +</Button>
-            </Stack>
-            {cars.length > 0 ? ( 
-                cars.map((car, index) => (
-                    <Stack key={index} className = "custom-stack" direction="horizontal" gap={3}>
-                    <div className="p-2">{car.licensePlate}</div>
-                    <Button className="ms-auto" variant="secondary">edit</Button>
-                    <div className="vr" />
-                    <Button variant="outline-danger">delete</Button>
-                    </Stack>
-                ))
-            ) : (
-                <div></div> 
-            )}
-    </Container>
-  );
-}
-
-export default carsMain;
+            <Button className="ms-auto" variant="primary" onClick={() => newCarModelsetShow(true)}>
+              Add +
+            </Button>
+            <NewCarModal
+                  show={newCarModelShow}
+                  onHide={() => newCarModelsetShow(!newCarModelShow)}
+                />
+          </Stack>
+          {cars.length > 0 ? (
+            cars.map((car, index) => (
+              <div key={index}> 
+                <Stack className="custom-stack" direction="horizontal" gap={3}>
+                  <div className="p-2">{car.licensePlate}</div>
+                  <Button
+                    className="ms-auto"
+                    variant="secondary"
+                    onClick={() => toggleModal(index)}
+                  >
+                    edit
+                  </Button>
+                  <div className="vr" />
+                  <Button variant="outline-danger" onClick={() => toggleDeleteModal(index)}>delete</Button>
+                </Stack>
+                <CarsModal
+                  show={car.showModal || false}
+                  onHide={() => toggleModal(index)}
+                  car={car}
+                />
+                <DeleteCarModal
+                  show={car.showDeleteModal || false}
+                  onHide={() => toggleDeleteModal(index)}
+                  car={car}
+                />
+              </div>
+            ))
+          ) : (
+            <div></div>
+          )}
+        </Container>
+      );
+    }
+    
+    export default carsMain;
