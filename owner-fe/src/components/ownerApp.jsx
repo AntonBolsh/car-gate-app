@@ -1,6 +1,8 @@
 import React from "react";
+import { Routes, Route } from 'react-router-dom';
 import OwnerMenuBar from "./ownerMenuBar";
 import CarsMain from "./carsMain"
+import VisitsMain from "./visitsMain"
 
 
 const OwnerApp = () => {
@@ -10,7 +12,11 @@ const OwnerApp = () => {
             <OwnerMenuBar />
         </header>
         <main>
-            <CarsMain />
+            <Routes>
+                <Route path="/" element={<CarsMain />} />
+                <Route path="/cars" element={<CarsMain />} />
+                <Route path="/visits" element={<VisitsMain />} />
+            </Routes>
         </main>
     </div>
   )

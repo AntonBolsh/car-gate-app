@@ -93,7 +93,7 @@ router.delete('/cars/:id', (req,res) => {
     });
 });
 
-//Find a car by plate number
+//get all cars
 router.get('/cars', (req,res) => {
 
     Car.find({isActive: true})
@@ -152,20 +152,40 @@ router.get('/cars/:licensePlate', keycloak.protect('realm:security-gate-keeper')
 //Create a Visit
 router.post('/visits', (req,res) => {
   
-    const property = new Visit({
+    const visit = new Visit({
         licensePlate: req.body.licensePlate,
         property_id: req.body.property_id,
         date: req.body.date,
         visitType: req.body.visitType
     });
     
-    property.save()
+    visit.save()
     .then(data => {
         res.status(201).send(data);
         console.log(`new Visit was created ${data.licensePlate}`)
     }).catch(err => {
         res.status(500).send({message:`Error creating visit ${err.message}`});
     });
+});
+
+//get all visits
+router.get('/visits', (req,res) => {
+
+    Visit.find({date:{$gte:new Date(new Date().setUTCHours(0,0,0,0))}}).sort({date: 1})
+    .then(visits => {
+        if(!visits || visits.length == 0) {
+            return res.status(404).send({
+                message: `Visits not found`
+            });            
+        }
+        res.status(200).send(visits);
+        })
+        .catch(err => {         
+        return res.status(500).send({
+            message: `Error retrieving car : ${err.message}`
+        });
+    });
+    
 });
 
 //Delete a Visit

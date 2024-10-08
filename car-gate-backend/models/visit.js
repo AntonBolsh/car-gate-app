@@ -14,7 +14,7 @@ const VisitSchema = mongoose.Schema({
             type: Date,
             required: [true, "date is missing"],
             validate: function(input) {
-                return new Date(input) >= new Date();
+                return new Date(input) >= new Date(new Date().setUTCHours(0,0,0,0));
             },
         },
         visitType: {
