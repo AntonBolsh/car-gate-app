@@ -3,14 +3,14 @@ import Stack from 'react-bootstrap/Stack';
 import Container from 'react-bootstrap/Container';
 import  "./main.css"
 import { useState, useEffect } from 'react'; 
-import CarsModal from './carsModal'
-import NewCarModal from './newCarModal'
-import DeleteCarModal from './deleteCarModal'
+import VisitsModal from './visitsModal'
+import NewVisitModal from './newVisitModal'
+import DeleteVisitModal from './deleteVisitModal'
 import moment from 'moment';
 
 function visitsMain() {
     const [visits, setVisits] = useState([]); 
-    //const [newCarModelShow, newCarModelsetShow] = useState(false);
+    const [newVisitModelShow, newVisitModelsetShow] = useState(false);
 
     useEffect(() => { 
         const getVisits = async () => {
@@ -40,33 +40,33 @@ function visitsMain() {
         getVisits(); 
     }, []); 
 
-    // const toggleModal = (index) => {
-    //     setCars((prevCars) =>
-    //       prevCars.map((car, i) =>
-    //         i === index ? { ...car, showModal: !car.showModal } : car,
-    //       ),
-    //     );
-    //   };
+    const toggleModal = (index) => {
+      setVisits((prevVisits) =>
+        prevVisits.map((visit, i) =>
+            i === index ? { ...visit, showModal: !visit.showModal } : visit,
+          ),
+        );
+      };
     
-    // const toggleDeleteModal = (index) => {
-    //     setCars((prevCars) =>
-    //         prevCars.map((car, i) =>
-    //         i === index ? { ...car, showDeleteModal: !car.showDeleteModal } : car,
-    //         ),
-    //     );
-    // };
+    const toggleDeleteModal = (index) => {
+      setVisits((prevVisits) =>
+            prevVisits.map((visit, i) =>
+            i === index ? { ...visit, showDeleteModal: !visit.showDeleteModal } : visit,
+            ),
+        );
+    };
     
       return (
         <Container fluid="sm" className="justify-content-center">
           <Stack className="first-stack" direction="horizontal" gap={3}>
             <div className="p-2">Visits</div>
-            <Button className="ms-auto" variant="primary" onClick={() => newCarModelsetShow(true)}>
+            <Button className="ms-auto" variant="primary" onClick={() => newVisitModelsetShow(true)}>
               Add +
             </Button>
-            {/* <NewCarModal
-                  show={newCarModelShow}
-                  onHide={() => newCarModelsetShow(!newCarModelShow)}
-                /> */}
+            <NewVisitModal
+                  show={newVisitModelShow}
+                  onHide={() => newVisitModelsetShow(!newVisitModelShow)}
+                />
           </Stack>
           {visits.length > 0 ? (
             visits.map((visit, index) => (
@@ -85,16 +85,16 @@ function visitsMain() {
                   <div className="vr" />
                   <Button variant="outline-danger" onClick={() => toggleDeleteModal(index)}>delete</Button>
                 </Stack>
-                {/* <CarsModal
-                  show={car.showModal || false}
+                <VisitsModal
+                  show={visit.showModal || false}
                   onHide={() => toggleModal(index)}
-                  car={car}
-                /> */}
-                {/* <DeleteCarModal
-                  show={car.showDeleteModal || false}
+                  visit={visit}
+                />
+                <DeleteVisitModal
+                  show={visit.showDeleteModal || false}
                   onHide={() => toggleDeleteModal(index)}
-                  car={car}
-                /> */}
+                  visit={visit}
+                />
               </div>
             ))
           ) : (
