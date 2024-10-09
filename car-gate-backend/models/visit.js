@@ -21,6 +21,10 @@ const VisitSchema = mongoose.Schema({
             type: String,
             enum: ['GUEST', 'WORKER', 'OTHER'],
             required: [true, "visitType is missing"],
+        },
+        isActive: {
+            type: Boolean,
+            default: true
         }
     }, 
     {

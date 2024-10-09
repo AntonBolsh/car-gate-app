@@ -7,7 +7,7 @@ import CarsModal from './carsModal'
 import NewCarModal from './newCarModal'
 import DeleteCarModal from './deleteCarModal'
 
-function carsMain() {
+function carsMain({token}) {
     const [cars, setCars] = useState([]); 
     const [newCarModelShow, newCarModelsetShow] = useState(false);
 
@@ -16,7 +16,7 @@ function carsMain() {
             const beLink = import.meta.env.VITE_BACKEND_LINK;
             const headers = {
                 accept: 'application/json',
-                authorization: `Bearer xxx99392994k`, // need to change hear when finish
+                authorization: `Bearer ${token}`, // need to change hear when finish
             };
             
             try { 

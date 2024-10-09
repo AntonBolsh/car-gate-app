@@ -76,8 +76,36 @@ router.post('/cars', (req,res) => {
     });
 });
 
+//Update a Car by ID
+router.put('/cars/:id', keycloak.protect('realm:property-owner'), (req, res) => {
+    Car.findByIdAndUpdate(
+      {_id : req.params.id}, 
+      {
+        licensePlate: req.body.licensePlate,
+      },
+      { new: true } // This option returns the updated document
+    )
+    .then(car => {
+      if(!car) {
+        return res.status(404).send({
+          message: "Visit not found with id " + req.params.id
+        });
+      }
+      res.status(200).send(car);
+    }).catch(err => {
+      if(err.kind === 'ObjectId') {
+        return res.status(404).send({
+          message: "Visit not found with id " + req.params.id
+        });                
+      }
+      return res.status(500).send({
+        message: "Error updating visit with id " + req.params.id
+      });
+    });
+  });
+
 //Delete a car
-router.delete('/cars/:id', (req,res) => {
+router.delete('/cars/:id', keycloak.protect('realm:property-owner'), (req,res) => {
     Car.findOneAndDelete({_id : req.params.id})
     .then(property => {
         if(!property) {
@@ -94,7 +122,8 @@ router.delete('/cars/:id', (req,res) => {
 });
 
 //get all cars
-router.get('/cars', (req,res) => {
+router.get('/cars', keycloak.protect('realm:property-owner'), (req,res) => {
+    //console.log(req.kauth.grant)
 
     Car.find({isActive: true})
     .then(cars => {
@@ -118,7 +147,7 @@ router.get('/cars/:licensePlate', keycloak.protect('realm:security-gate-keeper')
     //req.kauth.grant contains user information
     //console.log(req.kauth.grant)
 
-    Car.find({licensePlate : req.params.licensePlate})
+    Car.find({licensePlate : req.params.licensePlate, isActive: true})
     .then(cars => {
         if(!cars || cars.length == 0) {
             return res.status(404).send({
@@ -169,9 +198,9 @@ router.post('/visits', (req,res) => {
 });
 
 //get all visits
-router.get('/visits', (req,res) => {
+router.get('/visits', keycloak.protect('realm:property-owner'), (req,res) => {
 
-    Visit.find({date:{$gte:new Date(new Date().setUTCHours(0,0,0,0))}}).sort({date: 1})
+    Visit.find({date:{$gte:new Date(new Date().setUTCHours(0,0,0,0))}, isActive: true}).sort({date: 1})
     .then(visits => {
         if(!visits || visits.length == 0) {
             return res.status(404).send({
@@ -189,7 +218,7 @@ router.get('/visits', (req,res) => {
 });
 
 //Delete a Visit
-router.delete('/visits/:id', (req,res) => {
+router.delete('/visits/:id', keycloak.protect('realm:property-owner'), (req,res) => {
     Visit.findOneAndDelete({_id : req.params.id})
     .then(property => {
         if(!property) {
@@ -206,7 +235,7 @@ router.delete('/visits/:id', (req,res) => {
 });
 
 //Find a Visit by plate number
-router.get('/visits/:licensePlate', (req,res) => {
+router.get('/visits/:licensePlate', keycloak.protect('realm:security-gate-keeper'), (req,res) => {
     Visit.find({licensePlate : req.params.licensePlate})
     .then(visit => {
         if(!visit || visit.length == 0) {
@@ -222,5 +251,35 @@ router.get('/visits/:licensePlate', (req,res) => {
     });
     
 });
+
+//Update a Visit by ID
+router.put('/visits/:id', keycloak.protect('realm:property-owner'), (req, res) => {
+    Visit.findByIdAndUpdate(
+      {_id : req.params.id}, 
+      {
+        licensePlate: req.body.licensePlate,
+        date: req.body.date,
+        visitType: req.body.visitType 
+      },
+      { new: true } // This option returns the updated document
+    )
+    .then(visit => {
+      if(!visit) {
+        return res.status(404).send({
+          message: "Visit not found with id " + req.params.id
+        });
+      }
+      res.status(200).send(visit);
+    }).catch(err => {
+      if(err.kind === 'ObjectId') {
+        return res.status(404).send({
+          message: "Visit not found with id " + req.params.id
+        });                
+      }
+      return res.status(500).send({
+        message: "Error updating visit with id " + req.params.id
+      });
+    });
+  });
 
 module.exports = router;

@@ -5,7 +5,7 @@ import CarsMain from "./carsMain"
 import VisitsMain from "./visitsMain"
 
 
-const OwnerApp = () => {
+const OwnerApp = ({token}) => {
   return (
     <div>
         <header>
@@ -13,9 +13,9 @@ const OwnerApp = () => {
         </header>
         <main>
             <Routes>
-                <Route path="/" element={<CarsMain />} />
-                <Route path="/cars" element={<CarsMain />} />
-                <Route path="/visits" element={<VisitsMain />} />
+                <Route path="/" element={<CarsMain token={token}/>} />
+                <Route path="/cars" element={<CarsMain token={token}/>} />
+                <Route path="/visits" element={<VisitsMain token={token}/>} />
             </Routes>
         </main>
     </div>

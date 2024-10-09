@@ -8,7 +8,7 @@ import NewVisitModal from './newVisitModal'
 import DeleteVisitModal from './deleteVisitModal'
 import moment from 'moment';
 
-function visitsMain() {
+function visitsMain({token}) {
     const [visits, setVisits] = useState([]); 
     const [newVisitModelShow, newVisitModelsetShow] = useState(false);
 
@@ -17,7 +17,7 @@ function visitsMain() {
             const beLink = import.meta.env.VITE_BACKEND_LINK;
             const headers = {
                 accept: 'application/json',
-                authorization: `Bearer xxx99392994k`, // need to change hear when finish
+                authorization: `Bearer ${token}`, // need to change hear when finish
             };
             
             try { 
