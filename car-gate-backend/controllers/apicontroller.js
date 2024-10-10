@@ -60,11 +60,11 @@ router.get('/property/:id', (req,res) => {
 });
 
 //Create a car
-router.post('/cars', (req,res) => {
-  
+router.post('/cars', keycloak.protect('realm:property-owner'), (req,res) => {
+
     const car = new Car({
         licensePlate: req.body.licensePlate,
-        property_id: req.body.property_id
+        property_id: req.kauth.grant.access_token.content.propertyId
     });
     
     car.save()
@@ -83,7 +83,7 @@ router.put('/cars/:id', keycloak.protect('realm:property-owner'), (req, res) => 
       {
         licensePlate: req.body.licensePlate,
       },
-      { new: true } // This option returns the updated document
+      { new: true } 
     )
     .then(car => {
       if(!car) {
@@ -123,9 +123,9 @@ router.delete('/cars/:id', keycloak.protect('realm:property-owner'), (req,res) =
 
 //get all cars
 router.get('/cars', keycloak.protect('realm:property-owner'), (req,res) => {
-    //console.log(req.kauth.grant)
+    //console.log(req.kauth.grant.access_token.content.propertyId)
 
-    Car.find({isActive: true})
+    Car.find({isActive: true, property_id: req.kauth.grant.access_token.content.propertyId})
     .then(cars => {
         if(!cars || cars.length == 0) {
             return res.status(404).send({
@@ -179,11 +179,11 @@ router.get('/cars/:licensePlate', keycloak.protect('realm:security-gate-keeper')
 });
 
 //Create a Visit
-router.post('/visits', (req,res) => {
+router.post('/visits', keycloak.protect('realm:property-owner'), (req,res) => {
   
     const visit = new Visit({
         licensePlate: req.body.licensePlate,
-        property_id: req.body.property_id,
+        property_id: req.kauth.grant.access_token.content.propertyId,
         date: req.body.date,
         visitType: req.body.visitType
     });
@@ -200,7 +200,7 @@ router.post('/visits', (req,res) => {
 //get all visits
 router.get('/visits', keycloak.protect('realm:property-owner'), (req,res) => {
 
-    Visit.find({date:{$gte:new Date(new Date().setUTCHours(0,0,0,0))}, isActive: true}).sort({date: 1})
+    Visit.find({date:{$gte:new Date(new Date().setUTCHours(0,0,0,0))}, isActive: true, property_id: req.kauth.grant.access_token.content.propertyId}).sort({date: 1})
     .then(visits => {
         if(!visits || visits.length == 0) {
             return res.status(404).send({
@@ -255,7 +255,7 @@ router.get('/visits/:licensePlate', keycloak.protect('realm:security-gate-keeper
 //Update a Visit by ID
 router.put('/visits/:id', keycloak.protect('realm:property-owner'), (req, res) => {
     Visit.findByIdAndUpdate(
-      {_id : req.params.id}, 
+      {_id : req.params.id, property_id: req.kauth.grant.access_token.content.propertyId}, 
       {
         licensePlate: req.body.licensePlate,
         date: req.body.date,

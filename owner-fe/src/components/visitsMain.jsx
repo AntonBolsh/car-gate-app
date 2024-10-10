@@ -66,6 +66,7 @@ function visitsMain({token}) {
             <NewVisitModal
                   show={newVisitModelShow}
                   onHide={() => newVisitModelsetShow(!newVisitModelShow)}
+                  token={token}
                 />
           </Stack>
           {visits.length > 0 ? (
@@ -89,11 +90,13 @@ function visitsMain({token}) {
                   show={visit.showModal || false}
                   onHide={() => toggleModal(index)}
                   visit={visit}
+                  token={token}
                 />
                 <DeleteVisitModal
                   show={visit.showDeleteModal || false}
                   onHide={() => toggleDeleteModal(index)}
                   visit={visit}
+                  token={token}
                 />
               </div>
             ))

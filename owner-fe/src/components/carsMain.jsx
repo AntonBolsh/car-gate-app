@@ -16,7 +16,7 @@ function carsMain({token}) {
             const beLink = import.meta.env.VITE_BACKEND_LINK;
             const headers = {
                 accept: 'application/json',
-                authorization: `Bearer ${token}`, // need to change hear when finish
+                authorization: `Bearer ${token}`, 
             };
             
             try { 
@@ -65,6 +65,7 @@ function carsMain({token}) {
             <NewCarModal
                   show={newCarModelShow}
                   onHide={() => newCarModelsetShow(!newCarModelShow)}
+                  token={token}
                 />
           </Stack>
           {cars.length > 0 ? (
@@ -86,11 +87,13 @@ function carsMain({token}) {
                   show={car.showModal || false}
                   onHide={() => toggleModal(index)}
                   car={car}
+                  token={token}
                 />
                 <DeleteCarModal
                   show={car.showDeleteModal || false}
                   onHide={() => toggleDeleteModal(index)}
                   car={car}
+                  token={token}
                 />
               </div>
             ))
