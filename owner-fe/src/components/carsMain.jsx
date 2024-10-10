@@ -11,31 +11,32 @@ function carsMain({token}) {
     const [cars, setCars] = useState([]); 
     const [newCarModelShow, newCarModelsetShow] = useState(false);
 
-    useEffect(() => { 
-        const getCars = async () => {
-            const beLink = import.meta.env.VITE_BACKEND_LINK;
-            const headers = {
-                accept: 'application/json',
-                authorization: `Bearer ${token}`, 
-            };
-            
-            try { 
-                const carRes = await fetch(`${beLink}/cars`, {
-                    method: 'GET',
-                    headers: headers
-                });
-                if (carRes.status === 200) {
-                    const carResp = await carRes.json();
-                    setCars(carResp); 
-                } else {
-                    console.error("Error fetching cars:", carRes.status); 
-                    setCars([]);
-                }
-            } catch (error) {
-                console.error("Error fetching cars:", error);
+    const getCars = async () => {
+        const beLink = import.meta.env.VITE_BACKEND_LINK;
+        const headers = {
+            accept: 'application/json',
+            authorization: `Bearer ${token}`, 
+        };
+        
+        try { 
+            const carRes = await fetch(`${beLink}/cars`, {
+                method: 'GET',
+                headers: headers
+            });
+            if (carRes.status === 200) {
+                const carResp = await carRes.json();
+                setCars(carResp); 
+            } else {
+                console.error("Error fetching cars:", carRes.status); 
                 setCars([]);
             }
-        };
+        } catch (error) {
+            console.error("Error fetching cars:", error);
+            setCars([]);
+        }
+    };
+
+    useEffect(() => {  
         getCars(); 
     }, []); 
 
@@ -64,7 +65,9 @@ function carsMain({token}) {
             </Button>
             <NewCarModal
                   show={newCarModelShow}
-                  onHide={() => newCarModelsetShow(!newCarModelShow)}
+                  onHide={() => {
+                    newCarModelsetShow(!newCarModelShow)
+                    getCars()}}
                   token={token}
                 />
           </Stack>
@@ -85,13 +88,17 @@ function carsMain({token}) {
                 </Stack>
                 <CarsModal
                   show={car.showModal || false}
-                  onHide={() => toggleModal(index)}
+                  onHide={() => {
+                    toggleModal(index)
+                    getCars()}}
                   car={car}
                   token={token}
                 />
                 <DeleteCarModal
                   show={car.showDeleteModal || false}
-                  onHide={() => toggleDeleteModal(index)}
+                  onHide={() => {
+                    toggleDeleteModal(index)
+                    getCars()}}
                   car={car}
                   token={token}
                 />
