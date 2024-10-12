@@ -88,37 +88,48 @@ router.put('/cars/:id', keycloak.protect('realm:property-owner'), (req, res) => 
     .then(car => {
       if(!car) {
         return res.status(404).send({
-          message: "Visit not found with id " + req.params.id
+          message: "Car not found with id " + req.params.id
         });
       }
       res.status(200).send(car);
     }).catch(err => {
       if(err.kind === 'ObjectId') {
         return res.status(404).send({
-          message: "Visit not found with id " + req.params.id
+          message: "Car not found with id " + req.params.id
         });                
       }
       return res.status(500).send({
-        message: "Error updating visit with id " + req.params.id
+        message: "Error updating car with id " + req.params.id
       });
     });
   });
 
 //Delete a car
 router.delete('/cars/:id', keycloak.protect('realm:property-owner'), (req,res) => {
-    Car.findOneAndDelete({_id : req.params.id})
-    .then(property => {
-        if(!property) {
-            return res.status(404).send({
-                message: "Car not found "
-            });
+    Car.findByIdAndUpdate(
+        {_id : req.params.id}, 
+        {
+          isActive: false,
+        },
+        { new: true } 
+      )
+      .then(car => {
+        if(!car) {
+          return res.status(404).send({
+            message: "Visit not found with id " + req.params.id
+          });
         }
         res.status(204).send({message: "Car deleted successfully!"});
-    }).catch(err => {         
+      }).catch(err => {
+        if(err.kind === 'ObjectId') {
+          return res.status(404).send({
+            message: "Car not found with id " + req.params.id
+          });                
+        }
         return res.status(500).send({
-            message: `Could not delete car with id ${req.params.id} ${err.message}`
+          message: "Error deleting car with id " + req.params.id
         });
-    });
+      });
 });
 
 //get all cars

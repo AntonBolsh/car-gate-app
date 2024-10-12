@@ -2,6 +2,30 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 function DeleteCarModal(props) {
+
+  const handleDelete = async () => {
+    
+    const beLink = import.meta.env.VITE_BACKEND_LINK;
+    const headers = {
+        accept: 'application/json',
+        authorization: `Bearer ${props.token}`
+    };
+    try {
+      const resp = await fetch(`${beLink}/cars/${props.car._id}`, { 
+        method: 'DELETE',
+        headers: headers
+      });
+
+      if (!resp.ok) {
+        throw new Error(`HTTP error! status: ${resp.status}`)
+      }
+
+      props.onHide(); // add refreshing car list
+    } catch (error) {
+      console.error('Error saving license plate:', error) //add handling of error
+    }
+  };
+
   return (
     <Modal
       {...props}
@@ -15,7 +39,7 @@ function DeleteCarModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Footer>
-        <Button onClick={props.onHide} variant="danger" >delete</Button>
+        <Button onClick={handleDelete} variant="danger" >delete</Button>
         <Button variant="secondary" onClick={props.onHide}>cancel</Button>
       </Modal.Footer>
     </Modal>

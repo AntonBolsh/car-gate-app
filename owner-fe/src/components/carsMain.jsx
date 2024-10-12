@@ -10,6 +10,8 @@ import DeleteCarModal from './deleteCarModal'
 function carsMain({token}) {
     const [cars, setCars] = useState([]); 
     const [newCarModelShow, newCarModelsetShow] = useState(false);
+    const [selectedCar, setSelectedCar] = useState(null); 
+    const [carToDelete, setCarToDelete] = useState(null);
 
     const getCars = async () => {
         const beLink = import.meta.env.VITE_BACKEND_LINK;
@@ -40,20 +42,22 @@ function carsMain({token}) {
         getCars(); 
     }, []); 
 
-    const toggleModal = (index) => {
-        setCars((prevCars) =>
-          prevCars.map((car, i) =>
-            i === index ? { ...car, showModal: !car.showModal } : car,
-          ),
-        );
+    const handleEditCar = (car) => {
+        setSelectedCar(car);
       };
     
-    const toggleDeleteModal = (index) => {
-        setCars((prevCars) =>
-            prevCars.map((car, i) =>
-            i === index ? { ...car, showDeleteModal: !car.showDeleteModal } : car,
-            ),
-        );
+    const handleCloseEditModal = () => {
+        setSelectedCar(null);
+        getCars();
+    };
+
+    const handleDeleteCar = (car) => {
+        setCarToDelete(car);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setCarToDelete(null);
+        getCars();
     };
     
       return (
@@ -67,7 +71,7 @@ function carsMain({token}) {
                   show={newCarModelShow}
                   onHide={() => {
                     newCarModelsetShow(!newCarModelShow)
-                    getCars()}}
+                    }}
                   token={token}
                 />
           </Stack>
@@ -79,26 +83,22 @@ function carsMain({token}) {
                   <Button
                     className="ms-auto"
                     variant="secondary"
-                    onClick={() => toggleModal(index)}
+                    onClick={() => handleEditCar(car)} 
                   >
                     edit
                   </Button>
                   <div className="vr" />
-                  <Button variant="outline-danger" onClick={() => toggleDeleteModal(index)}>delete</Button>
+                  <Button variant="outline-danger" onClick={() => handleDeleteCar(car)}>delete</Button>
                 </Stack>
                 <CarsModal
-                  show={car.showModal || false}
-                  onHide={() => {
-                    toggleModal(index)
-                    getCars()}}
+                  show={selectedCar === car}
+                  onHide={handleCloseEditModal}
                   car={car}
                   token={token}
                 />
                 <DeleteCarModal
-                  show={car.showDeleteModal || false}
-                  onHide={() => {
-                    toggleDeleteModal(index)
-                    getCars()}}
+                  show={carToDelete === car} 
+                  onHide={handleCloseDeleteModal}
                   car={car}
                   token={token}
                 />
