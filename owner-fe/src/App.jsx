@@ -1,7 +1,6 @@
 import './App.css'
 import OwnerApp from './components/ownerApp'
 import useAuth from "./hooks/useAuth";
-import Public from './components/public'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -9,7 +8,7 @@ function App() {
     const [isLogin, token] = useAuth();
 
 
-  return (isLogin ? <OwnerApp token={token}/> : <Public/>
+  return (isLogin && <OwnerApp token={token}/>
   )
 }
 

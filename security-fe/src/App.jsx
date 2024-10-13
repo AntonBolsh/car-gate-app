@@ -8,7 +8,7 @@ function App() {
   const [isLogin, token] = useAuth();
 
 
-  return isLogin ? <SearchForm token={token} /> : <Public/>
+  return (isLogin && <SearchForm token={token} /> )
 }
 
 export default App;
