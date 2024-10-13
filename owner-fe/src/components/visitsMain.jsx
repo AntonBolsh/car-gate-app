@@ -12,31 +12,32 @@ function visitsMain({token}) {
     const [visits, setVisits] = useState([]); 
     const [newVisitModelShow, newVisitModelsetShow] = useState(false);
 
+    const getVisits = async () => {
+      const beLink = import.meta.env.VITE_BACKEND_LINK;
+      const headers = {
+          accept: 'application/json',
+          authorization: `Bearer ${token}`, // need to change hear when finish
+      };
+      
+      try { 
+          const visitsRes = await fetch(`${beLink}/visits`, {
+              method: 'GET',
+              headers: headers
+          });
+          if (visitsRes.status === 200) {
+              const visitsResp = await visitsRes.json();
+              setVisits(visitsResp); 
+          } else {
+              console.error("Error fetching visits:", visitsRes.status); 
+              setVisits([]);
+          }
+      } catch (error) {
+          console.error("Error fetching visits:", error);
+          setVisits([]);
+      }
+    };
+
     useEffect(() => { 
-        const getVisits = async () => {
-            const beLink = import.meta.env.VITE_BACKEND_LINK;
-            const headers = {
-                accept: 'application/json',
-                authorization: `Bearer ${token}`, // need to change hear when finish
-            };
-            
-            try { 
-                const visitsRes = await fetch(`${beLink}/visits`, {
-                    method: 'GET',
-                    headers: headers
-                });
-                if (visitsRes.status === 200) {
-                    const visitsResp = await visitsRes.json();
-                    setVisits(visitsResp); 
-                } else {
-                    console.error("Error fetching visits:", visitsRes.status); 
-                    setVisits([]);
-                }
-            } catch (error) {
-                console.error("Error fetching visits:", error);
-                setVisits([]);
-            }
-        };
         getVisits(); 
     }, []); 
 
@@ -65,7 +66,10 @@ function visitsMain({token}) {
             </Button>
             <NewVisitModal
                   show={newVisitModelShow}
-                  onHide={() => newVisitModelsetShow(!newVisitModelShow)}
+                  onHide={() => {
+                    newVisitModelsetShow(!newVisitModelShow)
+                    getVisits()
+                  }}
                   token={token}
                 />
           </Stack>
@@ -88,13 +92,19 @@ function visitsMain({token}) {
                 </Stack>
                 <VisitsModal
                   show={visit.showModal || false}
-                  onHide={() => toggleModal(index)}
+                  onHide={() => {
+                    toggleModal(index)
+                    getVisits()
+                  }}
                   visit={visit}
                   token={token}
                 />
                 <DeleteVisitModal
                   show={visit.showDeleteModal || false}
-                  onHide={() => toggleDeleteModal(index)}
+                  onHide={() => {
+                    toggleDeleteModal(index)
+                    getVisits()
+                  }}
                   visit={visit}
                   token={token}
                 />

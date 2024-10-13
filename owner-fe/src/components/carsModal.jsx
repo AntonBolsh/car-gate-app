@@ -27,9 +27,9 @@ function CarsModal(props) {
         throw new Error(`HTTP error! status: ${resp.status}`)
       }
 
-      props.onHide(); // add refreshing car list
+      props.onHide(); 
     } catch (error) {
-      console.error('Error saving license plate:', error) //add handling of error
+      console.error('Error saving license plate:', error) 
     }
   };
 
@@ -52,13 +52,12 @@ function CarsModal(props) {
             >
               <Form.Label>license plate number</Form.Label>
               <Form.Control 
-              as="textarea" 
-              rows={1} required 
-              type="text" 
-              defaultValue={licensePlate} 
-              placeholder="XXXXXX" 
-              value={licensePlate} 
-              onChange={(e) => setLicensePlate(e.target.value.toUpperCase())}
+                as="textarea" 
+                rows={1} required 
+                type="text"  
+                placeholder="XXXXXX" 
+                value={licensePlate} 
+                onChange={(e) => setLicensePlate(e.target.value.toUpperCase())}
               />
             </Form.Group>
           </Form>

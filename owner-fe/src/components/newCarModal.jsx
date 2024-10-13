@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { useState } from 'react';  
 
 function NewCarsModal(props) {
+  
   const [licensePlate, setLicensePlate] = useState('');
 
   const handleSave = async () => {
@@ -26,9 +27,9 @@ function NewCarsModal(props) {
         throw new Error(`HTTP error! status: ${resp.status}`)
       }
 
-      props.onHide(); // add refreshing car list
+      props.onHide(); 
     } catch (error) {
-      console.error('Error saving license plate:', error) //add handling of error
+      console.error('Error saving license plate:', error) 
     }
   };
 

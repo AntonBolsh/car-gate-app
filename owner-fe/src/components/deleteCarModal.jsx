@@ -20,9 +20,9 @@ function DeleteCarModal(props) {
         throw new Error(`HTTP error! status: ${resp.status}`)
       }
 
-      props.onHide(); // add refreshing car list
+      props.onHide(); 
     } catch (error) {
-      console.error('Error saving license plate:', error) //add handling of error
+      console.error('Error saving license plate:', error) 
     }
   };
 

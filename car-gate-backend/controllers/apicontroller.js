@@ -6,7 +6,7 @@ const Visit = require('../models/visit.js');
 const keycloak = require("../middlewares/keycloak");
 require('dotenv').config();
  
-var router = express.Router();
+const router = express.Router();
 
 //Create a property
 router.post('/property', (req,res) => {
@@ -79,7 +79,7 @@ router.post('/cars', keycloak.protect('realm:property-owner'), (req,res) => {
 //Update a Car by ID
 router.put('/cars/:id', keycloak.protect('realm:property-owner'), (req, res) => {
     Car.findByIdAndUpdate(
-      {_id : req.params.id}, 
+      {_id : req.params.id, property_id: req.kauth.grant.access_token.content.propertyId}, 
       {
         licensePlate: req.body.licensePlate,
       },
@@ -107,7 +107,7 @@ router.put('/cars/:id', keycloak.protect('realm:property-owner'), (req, res) => 
 //Delete a car
 router.delete('/cars/:id', keycloak.protect('realm:property-owner'), (req,res) => {
     Car.findByIdAndUpdate(
-        {_id : req.params.id}, 
+        {_id : req.params.id, property_id: req.kauth.grant.access_token.content.propertyId}, 
         {
           isActive: false,
         },
@@ -116,7 +116,7 @@ router.delete('/cars/:id', keycloak.protect('realm:property-owner'), (req,res) =
       .then(car => {
         if(!car) {
           return res.status(404).send({
-            message: "Visit not found with id " + req.params.id
+            message: "Car not found with id " + req.params.id
           });
         }
         res.status(204).send({message: "Car deleted successfully!"});
@@ -230,19 +230,31 @@ router.get('/visits', keycloak.protect('realm:property-owner'), (req,res) => {
 
 //Delete a Visit
 router.delete('/visits/:id', keycloak.protect('realm:property-owner'), (req,res) => {
-    Visit.findOneAndDelete({_id : req.params.id})
-    .then(property => {
-        if(!property) {
-            return res.status(404).send({
-                message: "Visit not found "
-            });
+
+    Visit.findByIdAndUpdate(
+        {_id : req.params.id, property_id: req.kauth.grant.access_token.content.propertyId}, 
+        {
+          isActive: false,
+        },
+        { new: true } 
+      )
+      .then(visit => {
+        if(!visit) {
+          return res.status(404).send({
+            message: "Visit not found with id " + req.params.id
+          });
         }
         res.status(204).send({message: "Visit deleted successfully!"});
-    }).catch(err => {         
+      }).catch(err => {
+        if(err.kind === 'ObjectId') {
+          return res.status(404).send({
+            message: "Visit not found with id " + req.params.id
+          });                
+        }
         return res.status(500).send({
-            message: `Could not delete Visit with id ${req.params.id} ${err.message}`
+          message: "Error deleting Visit with id " + req.params.id
         });
-    });
+      });
 });
 
 //Find a Visit by plate number
