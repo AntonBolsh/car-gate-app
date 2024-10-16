@@ -2,11 +2,12 @@ FROM node:17-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json .
+
 RUN npm install
 
 COPY . .
 
-EXPOSE 7100 
+EXPOSE 5173
 
-CMD ["node", "server.js"]  
+CMD ["npm", "run", "dev"] 
