@@ -16,7 +16,7 @@ const useAuth = () => {
     
     if (isRun.current) return;
     isRun.current = true;
-    client.init({ onLoad : "login-required"}).then((res) => {
+    client.init({ onLoad : "login-required", checkLoginIframe: false}).then((res) => {
       setLogin(res)
       setToken(client.token);
     });
